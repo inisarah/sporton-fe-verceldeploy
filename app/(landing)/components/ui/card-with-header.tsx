@@ -4,7 +4,7 @@ type TCardWithHeaderProps = {
 }
 const CardWithHeader = ({title, children}:TCardWithHeaderProps) => {
     return(
-        <div className="bg-white">
+        <div className="bg-white ">
                     <div className="px-5 py-4 border-b border-gray-200">
                         <h2 className="font-bold text-lg">Cart Item</h2>
                     </div>

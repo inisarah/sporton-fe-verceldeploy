@@ -1,7 +1,7 @@
-"use client";
 
 import { FiCreditCard } from "react-icons/fi";
 import CardWithHeader from "../ui/card-with-header";
+import { getAllBanks } from "@/app/services/bank.service";
 
 const paymentList = [
   {
@@ -21,10 +21,12 @@ const paymentList = [
   },
 ];
 
-const PaymentOptions = () => {
+const PaymentOptions = async () => {
+  const banks = await getAllBanks()
+
   return (
     <CardWithHeader title="Payment Options">
-      {paymentList.map((payment, index) => (
+      {banks.map((payment, index) => (
         <div
           key={index}
           className="flex gap-5 p-5 border-b border-gray-100 last:border-b-0"
@@ -36,10 +38,10 @@ const PaymentOptions = () => {
 
           <div className="flex justify-between w-full items-center">
             <div>
-              <div className="font-bold">{payment.bank_name}</div>
-              <div className="text-sm">{payment.account_number}</div>
+              <div className="font-bold">{payment.bankName}</div>
+              <div className="text-sm">{payment.accountNumber}</div>
               <div className="text-sm opacity-70">
-                {payment.account_holder}
+                {payment.accountName}
               </div>
             </div>
 

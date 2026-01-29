@@ -1,5 +1,6 @@
 import PaymentOptions from "../components/payment/payment-options";
 import PaymentSteps from "../components/payment/payment-steps";
+
 const Payment = () => {
     return(
         <main className="bg-gray-100 min-h-[80vh]">
