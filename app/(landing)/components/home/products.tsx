@@ -10,19 +10,17 @@ import { useCartStore } from "@/app/hooks/use-cart-store";
 
 type TProductsProps = {
   products: Product[];
-}
+};
 
-const ProductsSection = ({products}: TProductsProps) => {
-  const {addItem} = useCartStore();
+const ProductsSection = ({ products }: TProductsProps) => {
+  const { addItem } = useCartStore();
 
   const handleAddtoCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product)
+    addItem(product);
+  };
 
-  }
-
-  
   return (
     <section id="products-section" className="container mx-auto mt-32 mb-52">
       <h2 className="font-bold italic text-4xl text-center mb-11">
@@ -36,7 +34,7 @@ const ProductsSection = ({products}: TProductsProps) => {
             key={product._id}
             className="p-1.5 bg-white hover:drop-shadow-xl duration-300"
           >
-            <div className=" aspect-square w-full flex justify-center items-center relative">
+            <div className="aspect-square w-full flex justify-center items-center relative">
               <Image
                 src={getImageUrl(product.imageUrl)}
                 alt={product.name}
@@ -44,11 +42,13 @@ const ProductsSection = ({products}: TProductsProps) => {
                 height={300}
                 className="aspect-square object-contain"
               />
-              <Button
-              className="w-10 h-10 p-2! absolute right-3 top-3"
-              onClick={(e) => handleAddtoCart(e, product)}>
 
-              <FiPlus size={24}/></Button>
+              <Button
+                className="w-10 h-10 p-2! absolute right-3 top-3"
+                onClick={(e) => handleAddtoCart(e, product)}
+              >
+                <FiPlus size={24} />
+              </Button>
             </div>
 
             <h3 className="font-medium text-lg mb-1.5 mt-4">
@@ -56,7 +56,10 @@ const ProductsSection = ({products}: TProductsProps) => {
             </h3>
 
             <div className="flex justify-between mb-0">
-              <span className="text-gray-500">{product.category.name}</span>
+              {/* ✅ FIX UTAMA ADA DI SINI */}
+              <span className="text-gray-500">
+                {product.category?.name ?? "Tanpa Kategori"}
+              </span>
 
               <span className="font-medium text-primary">
                 {priceFormatter(product.price)}
