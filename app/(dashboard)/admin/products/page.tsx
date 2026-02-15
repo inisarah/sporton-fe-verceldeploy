@@ -1,14 +1,61 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/app/(landing)/components/ui/button";
 import { FiPlus } from "react-icons/fi";
 import ProductTable from "../../components/products/product-table";
 import ProductModal from "../../components/products/product-modal";
-const CategoryManagement = () => {
-    const [isOpen, setIsOpen] = useState(false)
+import { Product } from "@/app/types";
+import { deleteProduct, getAllProducts } from "@/app/services/product.service";
+import { toast } from "react-toastify";
+import DeleteModal from "../../components/ui/delete-modal";
+const ProductManagement = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [products, setProducts] = useState<Product[]>([])
+   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [productToDeleteId, setProductToDeleteId] = useState("");
+
+    const fetchProducts = async () => {
+        try{
+            const data = await getAllProducts();
+            if (data){
+                setProducts(data)
+            }
+           }catch(error){
+                console.log ("failed to fetch products", error);
+            }
+    };
+
+        const handleEdit = (product: Product) => {
+            setSelectedProduct(product);
+            setIsModalOpen(true);
+        }
+
+        const handleDelete = (id:string) => {
+            setProductToDeleteId(id);
+            setIsDeleteModalOpen(true);
+        }
+
+        const handleDeleteConfirm = async () => {
+            if(!productToDeleteId) return;
+            try{
+                await deleteProduct(productToDeleteId)
+                fetchProducts();
+                toast.success("Product deleted succesfully");
+                setIsDeleteModalOpen(false);
+                setProductToDeleteId("")
+            }catch(error){
+                console.error("failed to delete product", error);
+                 toast.error("failed to delete product");
+            }
+        }
+
+        useEffect(()=>{
+            fetchProducts();
+        }, []);
 
     const handleCloseModal = () => {
-        setIsOpen(false)
+        setIsModalOpen(false)
     }
     return (
         <div>
@@ -17,14 +64,23 @@ const CategoryManagement = () => {
                 <h1 className="font-bold text-2xl">Product Management</h1>
                 <p className="opacity-50">Manage your inventory,prices and stock</p>
                 </div>
-                <Button className="rounded-lg" onClick={() => setIsOpen(true)}>
+                <Button className="rounded-lg" onClick={() => setIsModalOpen(true)}>
                     <FiPlus size={24}/>Add Product
                 </Button>
             </div>
-            <ProductTable/>
-            <ProductModal isOpen={isOpen} onClose={handleCloseModal}/>
+            <ProductTable 
+                products={products} 
+                onEdit={handleEdit} 
+                onDelete={handleDelete}
+            />
+            <ProductModal
+            product={selectedProduct} 
+            onSuccess={fetchProducts}
+            isOpen={isModalOpen} 
+            onClose={handleCloseModal}/>
+            <DeleteModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDeleteConfirm}/>
         </div>
     );
 };
 
-export default CategoryManagement;
+export default ProductManagement;
